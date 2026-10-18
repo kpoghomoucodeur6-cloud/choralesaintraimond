@@ -642,7 +642,7 @@ h1 { margin-bottom: 9px; color: #183e30; font-size: clamp(32px, 3vw, 40px); lett
   .page-subtitle { font-size: 15px; }
   .stats-grid { gap: 12px; margin-bottom: 24px; }
   .stat-card { min-height: 128px; padding: 17px; }
-  .stat-top { font-size: 13px; }
+  .stat-top { font-size: 14px; }
   .stat-value { font-size: 30px; }
   .welcome-panel { min-height: 175px; padding: 26px; }
   .welcome-panel h2 { font-size: 25px; }
@@ -1221,3 +1221,142 @@ h1 { margin-bottom: 9px; color: #183e30; font-size: clamp(32px, 3vw, 40px); lett
 }
 .song-row { transition: background-color .18s ease; }
 .song-row:hover { background: #f9fbf8; }
+
+@media (max-width: 760px) {
+  body { font-size: 16px; line-height: 1.6; }
+  .page-content { padding: 25px 20px calc(104px + env(safe-area-inset-bottom)); }
+  .page-heading { gap: 14px; margin-bottom: 22px; }
+  .page-heading h1, h1 { font-size: clamp(30px, 7vw, 36px); line-height: 1.12; }
+  .eyebrow { font-size: 12px; letter-spacing: 1.2px; }
+  .page-subtitle { font-size: 16px; line-height: 1.65; }
+  .nav-link { font-size: 15px; }
+  .local-note strong { font-size: 14px; }
+  .local-note p, .sidebar-version { font-size: 12px; }
+  .btn { font-size: 14px; }
+  .btn-small { min-height: 38px; font-size: 13px; }
+  .stat-card { min-height: 122px; padding: 16px; }
+  .stat-top { font-size: 14px; line-height: 1.4; }
+  .stat-icon { width: 35px; height: 35px; flex-basis: 35px; }
+  .stat-value { font-size: 31px; }
+  .welcome-panel { padding: 25px; }
+  .welcome-panel h2 { font-size: 25px; line-height: 1.2; }
+  .welcome-panel p { font-size: 15px; line-height: 1.7; }
+  .section-header h2, .program-section-heading h2 { font-size: 22px; }
+  .song-title, .table-title { font-size: 16px; }
+  .song-meta { font-size: 14px; line-height: 1.5; }
+  .search-wrap .field, .field, .select-field, .textarea-field { font-size: 16px; }
+  .category-name { font-size: 15px; line-height: 1.4; }
+  .category-total { font-size: 14px; }
+  .category-section-heading { font-size: 22px; line-height: 1.3; }
+  .empty-state h3 { font-size: 22px; }
+  .empty-state p, .notice p { font-size: 15px; line-height: 1.65; }
+  .notice strong { font-size: 15px; }
+  .form-field label, .category-fieldset legend { font-size: 15px; }
+  .field-hint, .optional-label { font-size: 13px; line-height: 1.5; }
+  .category-choice { min-height: 46px; }
+  .category-choice span { font-size: 14px; }
+  .program-step-toggle { font-size: 15px; }
+  .program-selected-copy strong, .program-song-option-copy > strong { font-size: 16px; }
+  .program-selected-copy > span, .program-song-option-copy > span { font-size: 14px; }
+  .program-song-option-copy p, .mass-program-meta { font-size: 15px; line-height: 1.55; }
+  .mobile-action-bar .btn { font-size: 13px; }
+  .footer-kicker, .footer-credit-label { font-size: 11px; }
+  .footer-location, .footer-bottom { font-size: 13px; }
+  .footer-credit strong { font-size: 15px; }
+  .footer-credit a { font-size: 14px; }
+  .presentation-header {
+    position: relative;
+    z-index: 2;
+    min-height: 78px;
+    border-bottom: 1px solid #e6eadf;
+    background: #ffffffed;
+    box-shadow: 0 5px 18px #173d3208;
+    backdrop-filter: blur(14px);
+  }
+  .presentation-brand strong { font-size: 16px; }
+  .presentation-brand small { font-size: 12px; }
+  .presentation-login-link { min-height: 46px; font-size: 14px; }
+  .presentation-main { padding: 18px 20px 42px; }
+  .presentation-hero {
+    min-height: 445px;
+    align-items: flex-end;
+    border: 1px solid #d5c37d;
+    border-radius: 25px;
+    background:
+      radial-gradient(ellipse at 90% 15%, #e1c9782e, transparent 16rem),
+      linear-gradient(180deg, #10372bc4 0%, #143e31d9 46%, #103629f5 100%),
+      url("../images/chorale.jpg") center 37% / cover;
+    padding: 34px clamp(24px, 7vw, 42px);
+    box-shadow: 0 24px 50px #123b2c26, inset 0 0 0 5px #ffffff0c;
+  }
+  .presentation-hero-copy { max-width: 570px; }
+  .presentation-hero .eyebrow {
+    display: inline-flex;
+    border: 1px solid #e4cb7b66;
+    border-radius: 40px;
+    background: #09281f4d;
+    padding: 8px 12px;
+    color: #f1d982;
+    font-size: 11px;
+    letter-spacing: 1px;
+  }
+  .presentation-hero h1 { max-width: 470px; font-size: clamp(40px, 10vw, 49px); line-height: 1.04; }
+  .presentation-hero-copy > p:not(.eyebrow) { max-width: 470px; font-size: 16px; line-height: 1.7; }
+  .presentation-hero .btn-gold { min-height: 50px; border-radius: 12px; padding-inline: 18px; font-size: 15px; }
+  .presentation-hero-mark { right: 4px; top: 13px; bottom: auto; color: #e7d18a22; font-size: 172px; }
+  .presentation-intro { max-width: 560px; margin: 45px auto 35px; border: 1px solid #e5e9dc; border-radius: 21px; background: linear-gradient(145deg, #fff, #f7f8f1); padding: 25px 22px; box-shadow: 0 12px 32px #173d320b; }
+  .presentation-intro .eyebrow { margin-bottom: 10px; }
+  .presentation-intro h2 { font-size: 29px; line-height: 1.2; }
+  .presentation-intro > p:last-child { font-size: 16px; line-height: 1.7; }
+  .presentation-team { border-radius: 23px; padding: 25px 21px; box-shadow: 0 18px 42px #173d3210; }
+  .presentation-section-heading h2 { font-size: 30px; }
+  .presentation-team-note { font-size: 13px; }
+  .presentation-president { min-height: 112px; padding: 17px; }
+  .presentation-person-mark { width: 59px; height: 59px; flex-basis: 59px; border-radius: 18px; font-size: 19px; }
+  .presentation-role { font-size: 12px; }
+  .presentation-president h3 { font-size: 21px; }
+  .presentation-note { font-size: 14px; }
+  .presentation-leaders-title { font-size: 16px; }
+  .presentation-leader { min-height: 88px; border-radius: 15px; padding: 14px; }
+  .presentation-leader .presentation-person-mark { width: 50px; height: 50px; flex-basis: 50px; font-size: 15px; }
+  .presentation-leader .presentation-role { font-size: 11px; letter-spacing: .5px; }
+  .presentation-leader h3 { font-size: 16px; line-height: 1.4; }
+  .presentation-footer { font-size: 13px; }
+}
+
+@media (max-width: 480px) {
+  .page-content { padding-right: 15px; padding-left: 15px; }
+  .breadcrumb { font-size: 12px; }
+  .topbar-profile-copy > strong { font-size: 13px; }
+  .topbar-profile-voice { font-size: 12px; }
+  .stat-top { font-size: 13px; }
+  .stat-card { min-height: 116px; }
+  .welcome-panel h2 { font-size: 23px; }
+  .section-header, .song-list { padding-inline: 16px; }
+  .song-actions .btn-small { display: none; }
+  .mobile-action-bar { gap: 6px; padding-right: 10px; padding-left: 10px; }
+  .mobile-action-bar .btn { gap: 5px; min-height: 48px; padding-inline: 5px; font-size: 13px; }
+  .presentation-header { align-items: center; gap: 8px; padding: 12px 13px; }
+  .presentation-brand { min-width: 0; gap: 8px; }
+  .presentation-brand img { width: 45px; height: 45px; }
+  .presentation-brand strong { font-size: 14px; }
+  .presentation-brand small { font-size: 11px; }
+  .presentation-login-link { min-height: 42px; gap: 4px; padding-inline: 10px; font-size: 12px; }
+  .presentation-main { padding: 13px 14px 32px; }
+  .presentation-hero { min-height: 455px; border-radius: 22px; padding: 27px 21px; }
+  .presentation-hero h1 { font-size: clamp(39px, 11vw, 46px); }
+  .presentation-hero-copy > p:not(.eyebrow) { font-size: 16px; }
+  .presentation-hero-mark { right: 0; top: 27px; font-size: 148px; }
+  .presentation-intro { margin: 34px auto 28px; padding: 23px 19px; }
+  .presentation-intro h2 { font-size: 27px; }
+  .presentation-intro > p:last-child { font-size: 15px; }
+  .presentation-team { padding: 22px 16px; }
+  .presentation-section-heading h2 { font-size: 28px; }
+  .presentation-team-note { font-size: 12px; }
+  .presentation-president { padding: 15px; }
+  .presentation-president h3 { font-size: 19px; }
+  .presentation-president .presentation-note { margin-left: 71px; font-size: 13px; }
+  .presentation-leader { min-height: 86px; }
+  .presentation-leader h3 { font-size: 16px; }
+  .presentation-footer { font-size: 12px; }
+}

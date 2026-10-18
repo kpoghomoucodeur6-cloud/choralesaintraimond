@@ -1389,3 +1389,20 @@ h1 { margin-bottom: 9px; color: #183e30; font-size: clamp(32px, 3vw, 40px); lett
   .presentation-leader h3 { font-size: 16px; }
   .presentation-footer { font-size: 12px; }
 }
+
+@media (max-width: 760px) {
+  .program-print-content .modal-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .program-print-content .modal-actions [data-action="print-program"] {
+    grid-row: 1;
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: 100%;
+    justify-self: stretch;
+    box-sizing: border-box;
+    white-space: normal;
+    text-align: center;
+  }
+}

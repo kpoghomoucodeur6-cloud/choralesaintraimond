@@ -18,6 +18,12 @@ Les droits sont appliqués par la base (RLS + policies Storage), pas seulement p
 ## Configuration
 `assets/js/config.js` contient l'URL du projet et la clé publique (publishable/anon), sûres côté navigateur. Ne jamais y mettre la clé `service_role`.
 
+## Déploiement Netlify et Google Search Console
+- Connectez le dépôt GitHub à Netlify : la configuration `netlify.toml` publie le site statique et génère `sitemap.xml` et `robots.txt` à chaque build à partir de l'URL HTTPS du site fournie par Netlify.
+- Après le premier déploiement, vérifiez `https://VOTRE-SITE.netlify.app/sitemap.xml` et `https://VOTRE-SITE.netlify.app/robots.txt`.
+- Dans Supabase → **Authentication → URL Configuration**, définissez l'URL Netlify comme *Site URL* et ajoutez-la aux URL de redirection autorisées.
+- Ajoutez le domaine du site à Google Search Console, validez-en la propriété, puis soumettez `sitemap.xml`. Le site est une application avec authentification : le sitemap ne référence que sa page d'accueil publique; la bibliothèque et les programmes restent réservés aux membres connectés.
+
 ## Données locales de l'ancienne version
 Un bandeau sur le tableau de bord (admin) propose d'importer les chants du navigateur ; les anciennes sauvegardes JSON (v1) et les sauvegardes v2/v3 (métadonnées) sont importables. Les sauvegardes ne contiennent pas les fichiers PDF ni audio, qui restent conservés dans Supabase.
 

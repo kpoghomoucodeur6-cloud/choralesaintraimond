@@ -2,6 +2,8 @@
 
 Bibliothèque de chants partagée (Paroisse Saint Kizito KM36). Site statique (HTML, Tailwind CDN, JS) avec **Supabase** pour les comptes, les données et les fichiers.
 
+La page publique présente la chorale et ses responsables avant connexion. Le lien « Espace choriste » mène au formulaire de connexion; les fonctions du répertoire restent réservées aux membres.
+
 ## Rôles
 - **Admin** : ajoute, modifie et supprime les chants avec une partition PDF complète (les quatre voix sur un seul PDF, ≤ 3 Mo) et des audios facultatifs distincts pour les pupitres soprano, alto, ténor et basse (≤ 5 Mo chacun) ; gère les membres (page « Membres »), sauvegarde/importe.
 - **Choriste** : à l'inscription, choisit son pupitre (soprano, alto, ténor, basse ou solo) ; consulte et recherche les chants, ouvre la partition PDF complète, écoute les enregistrements de son pupitre et gère ses favoris privés.

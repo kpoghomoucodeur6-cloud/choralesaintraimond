@@ -742,6 +742,82 @@ h1 { margin-bottom: 9px; color: #183e30; font-size: clamp(32px, 3vw, 40px); lett
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
 
+.public-presentation { min-height: 100vh; background: #f7f8f5; }
+.presentation-header { display: flex; max-width: 1320px; min-height: 88px; align-items: center; justify-content: space-between; gap: 20px; margin: 0 auto; padding: 14px 38px; }
+.presentation-brand { display: inline-flex; align-items: center; gap: 13px; color: #203b2d; text-decoration: none; }
+.presentation-brand img { width: 54px; height: 54px; border: 2px solid #d7c27c; border-radius: 50%; background: #fff; object-fit: cover; }
+.presentation-brand span { display: grid; gap: 4px; }
+.presentation-brand strong { font: 600 17px "Playfair Display", serif; }
+.presentation-brand small { color: #718076; font-size: 12px; }
+.presentation-login-link { min-height: 44px; border-radius: 10px; font-size: 14px; text-decoration: none; }
+.presentation-main { max-width: 1320px; margin: 0 auto; padding: 10px 38px 60px; }
+.presentation-hero { position: relative; display: flex; min-height: 430px; align-items: center; overflow: hidden; border: 1px solid #d4c27f; border-radius: 27px; background: linear-gradient(90deg, #12362feF 0%, #174638df 48%, #173e32b0 100%), url("../images/chorale.jpg") center 44% / cover; padding: 58px clamp(28px, 7vw, 90px); color: #fff; box-shadow: 0 24px 60px #183c2c1c; }
+.presentation-hero-copy { position: relative; z-index: 1; max-width: 690px; }
+.presentation-hero .eyebrow { color: #e0c878; }
+.presentation-hero h1 { max-width: 650px; margin-bottom: 17px; color: #fff; font-size: clamp(38px, 5vw, 64px); line-height: 1.08; }
+.presentation-hero-copy > p:not(.eyebrow) { max-width: 590px; margin-bottom: 27px; color: #e0e9e2; font-size: 17px; line-height: 1.8; }
+.btn-gold { border-color: #dfc779; background: #dfc779; color: #263c2d; text-decoration: none; }
+.btn-gold:hover { border-color: #f0d98f; background: #f0d98f; }
+.presentation-hero-mark { position: absolute; right: 8%; bottom: -66px; color: #dfc77924; font: 300 330px "Playfair Display", serif; line-height: 1; }
+.presentation-intro { max-width: 750px; margin: 68px auto 55px; text-align: center; }
+.presentation-intro h2, .presentation-section-heading h2 { margin-bottom: 12px; color: #203b2d; font: 600 clamp(26px, 3vw, 36px) "Playfair Display", serif; }
+.presentation-intro > p:last-child { margin: 0; color: #6e7c71; font-size: 16px; line-height: 1.8; }
+.presentation-team { border: 1px solid #e0e7dc; border-radius: 23px; background: linear-gradient(145deg, #fff, #fbfcf8); padding: clamp(22px, 4vw, 42px); box-shadow: 0 18px 55px #193b2a0d; }
+.presentation-section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 25px; }
+.presentation-section-heading .eyebrow { margin-bottom: 7px; }
+.presentation-section-heading h2 { margin-bottom: 0; }
+.presentation-team-note { border: 1px solid #e8dfbf; border-radius: 30px; background: #fbf7e9; padding: 9px 14px; color: #77633a; font-size: 12px; font-weight: 600; }
+.presentation-president, .presentation-leader { display: flex; align-items: center; gap: 16px; border: 1px solid #e5ebe2; border-radius: 16px; background: #fff; padding: 17px 19px; }
+.presentation-president { min-height: 105px; border-color: #e6d9ae; background: linear-gradient(110deg, #fffdf6, #fff); }
+.presentation-person-mark { display: grid; width: 55px; height: 55px; flex: 0 0 55px; place-items: center; border: 1px solid #d8c480; border-radius: 17px; background: linear-gradient(145deg, #f9f4e4, #efe8cf); color: #786130; font: 600 17px "Playfair Display", serif; }
+.presentation-role { display: block; margin-bottom: 5px; color: #8a7440; font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; }
+.presentation-president h3, .presentation-leader h3 { margin: 0; color: #294332; font: 600 19px "Playfair Display", serif; }
+.presentation-note { margin-left: auto; color: #78857a; font-size: 13px; }
+.presentation-leaders-title { margin: 30px 0 14px; color: #405448; font-size: 14px; }
+.presentation-leaders { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.presentation-leader { min-height: 92px; padding: 13px; }
+.presentation-leader .presentation-person-mark { width: 47px; height: 47px; flex-basis: 47px; border-radius: 14px; font-size: 14px; }
+.presentation-leader .presentation-role { font-size: 9px; letter-spacing: .55px; }
+.presentation-leader h3 { font-size: 15px; line-height: 1.35; }
+.presentation-footer { display: flex; justify-content: space-between; gap: 15px; border-top: 1px solid #e7ebe5; padding: 22px max(38px, calc((100vw - 1244px) / 2)); color: #748076; font-size: 12px; }
+
+@media (max-width: 760px) {
+  .presentation-header { min-height: 76px; padding: 12px 20px; }
+  .presentation-main { padding: 8px 20px 40px; }
+  .presentation-hero { min-height: 390px; border-radius: 21px; padding: 38px 28px; }
+  .presentation-hero-copy > p:not(.eyebrow) { font-size: 15px; }
+  .presentation-hero-mark { right: -20px; bottom: -49px; font-size: 250px; }
+  .presentation-intro { margin: 50px auto 40px; }
+  .presentation-leaders { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .presentation-footer { padding: 20px; }
+}
+
+@media (max-width: 480px) {
+  .presentation-header { align-items: flex-start; gap: 12px; padding: 14px; }
+  .presentation-brand { gap: 9px; }
+  .presentation-brand img { width: 44px; height: 44px; }
+  .presentation-brand strong { font-size: 14px; }
+  .presentation-brand small { font-size: 10px; }
+  .presentation-login-link { min-height: 40px; gap: 5px; padding: 0 10px; font-size: 11px; white-space: nowrap; }
+  .presentation-main { padding: 5px 14px 30px; }
+  .presentation-hero { min-height: 400px; align-items: flex-end; padding: 30px 22px; }
+  .presentation-hero h1 { font-size: 39px; }
+  .presentation-hero-copy > p:not(.eyebrow) { font-size: 14px; line-height: 1.7; }
+  .presentation-hero-mark { right: -30px; top: -44px; bottom: auto; font-size: 190px; }
+  .presentation-intro { margin: 40px auto 32px; }
+  .presentation-intro h2 { font-size: 27px; }
+  .presentation-intro > p:last-child { font-size: 14px; }
+  .presentation-team { border-radius: 18px; padding: 19px 15px; }
+  .presentation-section-heading { align-items: flex-start; flex-direction: column; }
+  .presentation-team-note { font-size: 11px; }
+  .presentation-president { align-items: flex-start; flex-wrap: wrap; gap: 12px; padding: 14px; }
+  .presentation-president .presentation-note { width: 100%; margin-left: 67px; }
+  .presentation-president h3 { font-size: 17px; }
+  .presentation-leaders { grid-template-columns: 1fr; gap: 9px; }
+  .presentation-leader { min-height: 80px; }
+  .presentation-footer { flex-direction: column; gap: 6px; padding: 17px 20px; font-size: 11px; }
+}
+
 /* Navigation and vocal-part controls */
 .sidebar {
   width: 280px;

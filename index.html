@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#173d32" />
     <meta
       name="description"
-      content="Chora, la bibliothèque musicale de la Chorale Saint Raimond de la paroisse Saint Kizito : chants, partitions et programmes des messes."
+      content="Découvrez la Chorale Saint Raimond de la paroisse Saint Kizito à KM 36, son équipe et sa bibliothèque musicale."
     />
     <meta name="robots" content="index, follow" />
     <meta name="google-site-verification" content="PD8d90qb6xJKRoDCivkxQ7R_-v7vndcl1OC23W54cJg" />
@@ -15,7 +15,7 @@
     <meta property="og:title" content="Chora — Chorale Saint Raimond" />
     <meta
       property="og:description"
-      content="Bibliothèque musicale, partitions et programmes des messes de la Chorale Saint Raimond, paroisse Saint Kizito."
+      content="Présentation de la Chorale Saint Raimond, son équipe, sa bibliothèque musicale et les programmes des messes."
     />
     <meta property="og:site_name" content="Chora — Chorale Saint Raimond" />
     <title>Chora — Chorale Saint Raimond, paroisse Saint Kizito</title>
@@ -31,8 +31,56 @@
     <link rel="stylesheet" href="assets/css/styles.css" />
   </head>
   <body>
+    <section class="public-presentation" id="public-presentation" hidden aria-labelledby="presentation-title">
+      <header class="presentation-header">
+        <a class="presentation-brand" href="#" aria-label="Chorale Saint Raimond">
+          <img src="assets/images/choir-logo.png" alt="" />
+          <span><strong>Chorale Saint Raimond</strong><small>Paroisse Saint Kizito · KM 36</small></span>
+        </a>
+        <a class="btn btn-primary presentation-login-link" href="#connexion">Espace choriste <span aria-hidden="true">→</span></a>
+      </header>
+      <main class="presentation-main">
+        <section class="presentation-hero">
+          <div class="presentation-hero-copy">
+            <p class="eyebrow">AU SERVICE DU CHANT ET DE LA PRIÈRE</p>
+            <h1 id="presentation-title">Une voix, une foi, une chorale.</h1>
+            <p>La Chorale Saint Raimond accompagne la vie liturgique de la paroisse Saint Kizito à KM 36. Par le chant, ses membres unissent leurs voix au service de la prière et de la communauté.</p>
+            <a class="btn btn-gold" href="#equipe">Découvrir notre équipe <span aria-hidden="true">↓</span></a>
+          </div>
+          <div class="presentation-hero-mark" aria-hidden="true">♫</div>
+        </section>
+
+        <section class="presentation-intro" aria-labelledby="presentation-community-title">
+          <p class="eyebrow">NOTRE COMMUNAUTÉ</p>
+          <h2 id="presentation-community-title">Chanter ensemble, servir avec foi.</h2>
+          <p>Rassemblés autour de la musique et de la foi, nous mettons nos voix au service des célébrations et de la vie de notre paroisse.</p>
+        </section>
+
+        <section class="presentation-team" id="equipe" aria-labelledby="presentation-team-title">
+          <div class="presentation-section-heading">
+            <div><p class="eyebrow">LA CHORALE SAINT RAIMOND</p><h2 id="presentation-team-title">Notre équipe</h2></div>
+            <span class="presentation-team-note">Paroisse Saint Kizito · KM 36</span>
+          </div>
+          <article class="presentation-president">
+            <span class="presentation-person-mark" aria-hidden="true">EW</span>
+            <div><span class="presentation-role">Présidente</span><h3>Elisabeth Wossou</h3></div>
+            <span class="presentation-note">Présidence de la chorale</span>
+          </article>
+          <h3 class="presentation-leaders-title">Maîtres de chœur</h3>
+          <div class="presentation-leaders">
+            <article class="presentation-leader"><span class="presentation-person-mark" aria-hidden="true">SY</span><div><span class="presentation-role">Maître de chœur</span><h3>Siméon Yéamou</h3></div></article>
+            <article class="presentation-leader"><span class="presentation-person-mark" aria-hidden="true">JC</span><div><span class="presentation-role">Maître de chœur</span><h3>Jean Baptiste Camara</h3></div></article>
+            <article class="presentation-leader"><span class="presentation-person-mark" aria-hidden="true">JK</span><div><span class="presentation-role">Maître de chœur</span><h3>John Kpoghomou</h3></div></article>
+            <article class="presentation-leader"><span class="presentation-person-mark" aria-hidden="true">BK</span><div><span class="presentation-role">Maître de chœur</span><h3>Benoit Koundouno</h3></div></article>
+            <article class="presentation-leader"><span class="presentation-person-mark" aria-hidden="true">R</span><div><span class="presentation-role">Maître de chœur</span><h3>Robert</h3></div></article>
+          </div>
+        </section>
+      </main>
+      <footer class="presentation-footer"><span>Chorale Saint Raimond</span><span>Paroisse Saint Kizito · KM 36</span></footer>
+    </section>
+
     <section class="auth-screen" id="auth-screen" hidden>
-      <div class="auth-card">
+      <div class="auth-card" id="connexion">
         <img class="auth-logo" src="assets/images/choir-logo.png" alt="Logo de la Chorale Saint Remond" />
         <p class="eyebrow">PAROISSE SAINT KIZITO · KM 36</p>
         <h1>Chorale Saint Raimond</h1>

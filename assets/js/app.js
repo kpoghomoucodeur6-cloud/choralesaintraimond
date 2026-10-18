@@ -75,6 +75,7 @@
   const modal = $("modal");
   const toastRegion = $("toast-region");
   const authScreen = $("auth-screen");
+  const publicPresentation = $("public-presentation");
   const appShell = $("app-shell");
 
   let client = null;
@@ -151,11 +152,13 @@
 
   function showAuth() {
     appShell.hidden = true;
+    publicPresentation.hidden = false;
     authScreen.hidden = false;
     document.body.style.overflow = "";
   }
 
   function showApp() {
+    publicPresentation.hidden = true;
     authScreen.hidden = true;
     appShell.hidden = false;
   }

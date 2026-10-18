@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#173d32" />
+    <meta
+      name="description"
+      content="Chora, la bibliothèque musicale de votre chorale."
+    />
+    <title>Chora — Bibliothèque musicale</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <section class="auth-screen" id="auth-screen" hidden>
+      <div class="auth-card">
+        <img class="auth-logo" src="assets/images/choir-logo.png" alt="Logo de la Chorale Saint Remond" />
+        <p class="eyebrow">PAROISSE SAINT KIZITO · KM 36</p>
+        <h1>Chorale Saint Raimond</h1>
+        <p class="page-subtitle" id="auth-subtitle">Connectez-vous pour accéder au répertoire de la chorale.</p>
+        <div class="auth-tabs" role="tablist">
+          <button type="button" class="auth-tab active" data-auth-mode="signin" role="tab">Connexion</button>
+          <button type="button" class="auth-tab" data-auth-mode="signup" role="tab">Créer un compte</button>
+        </div>
+        <form id="auth-form" novalidate>
+          <div class="form-field" id="auth-name-field" hidden>
+            <label for="auth-name">Nom complet</label>
+            <input class="field" id="auth-name" name="name" type="text" maxlength="100" autocomplete="name" placeholder="Votre nom" />
+          </div>
+          <div class="form-field" id="auth-voice-field" hidden>
+            <label for="auth-voice">Votre voix / pupitre</label>
+            <select class="select-field" id="auth-voice" name="voice_part">
+              <option value="">Choisissez votre voix</option>
+              <option value="soprano">Soprano</option>
+              <option value="alto">Alto</option>
+              <option value="tenor">Ténor</option>
+              <option value="bass">Basse</option>
+              <option value="solo">Solo</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="auth-email">Adresse e-mail</label>
+            <input class="field" id="auth-email" name="email" type="email" maxlength="254" autocomplete="email" required placeholder="vous@exemple.com" />
+          </div>
+          <div class="form-field">
+            <label for="auth-password">Mot de passe</label>
+            <input class="field" id="auth-password" name="password" type="password" minlength="8" maxlength="72" autocomplete="current-password" required placeholder="8 caractères minimum" />
+          </div>
+          <p class="auth-message" id="auth-message" role="status" hidden></p>
+          <button class="btn btn-primary auth-submit" id="auth-submit" type="submit">Se connecter</button>
+          <button class="text-link auth-forgot" id="auth-forgot" type="button">Mot de passe oublié ?</button>
+        </form>
+        <p class="auth-footnote">Développé par <a href="https://johnnycodeur-tech-guinee.netlify.app" target="_blank" rel="noopener noreferrer">JohnnyCodeur Tech</a></p>
+      </div>
+    </section>
+
+    <div class="app-shell" id="app-shell" hidden>
+      <aside class="sidebar" id="sidebar">
+        <a class="brand" href="#" data-page="dashboard" aria-label="Chorale Saint Remond, KM 36 — accueil">
+          <img class="brand-logo" src="assets/images/choir-logo.png" alt="Logo de la Chorale Saint Remond" />
+          <span class="brand-identity">
+            <span class="brand-name">Chorale Saint Raimond</span>
+            <span class="brand-location">KM 36</span>
+          </span>
+        </a>
+
+        <div class="sidebar-label">ESPACE CHORALE</div>
+        <nav class="nav-list" aria-label="Navigation principale">
+          <button class="nav-link active" data-page="dashboard">
+            <span class="nav-icon" aria-hidden="true">⌂</span> Tableau de bord
+          </button>
+          <button class="nav-link" data-page="library">
+            <span class="nav-icon" aria-hidden="true">♫</span> Bibliothèque
+            <span class="nav-count" id="library-count">0</span>
+          </button>
+          <button class="nav-link" data-page="favorites">
+            <span class="nav-icon" aria-hidden="true">♡</span> Mes favoris
+          </button>
+          <button class="nav-link" data-page="categories">
+            <span class="nav-icon" aria-hidden="true">▦</span> Catégories
+          </button>
+          <button class="nav-link" data-page="programs">
+            <span class="nav-icon" aria-hidden="true">♧</span> Programme des messes
+          </button>
+          <button class="nav-link admin-only" data-page="manage" hidden>
+            <span class="nav-icon" aria-hidden="true">＋</span> Gestion des chants
+          </button>
+          <button class="nav-link admin-only" data-page="members" hidden>
+            <span class="nav-icon" aria-hidden="true">☺</span> Membres
+          </button>
+        </nav>
+
+        <div class="sidebar-bottom">
+          <div class="local-note user-card">
+            <span class="note-icon" aria-hidden="true">☺</span>
+            <div>
+              <strong id="user-name">Membre</strong>
+              <p id="user-email"></p>
+              <span class="role-badge" id="user-role">Choriste</span>
+            </div>
+          </div>
+          <button class="nav-link backup-link admin-only" id="export-button" hidden>
+            <span class="nav-icon" aria-hidden="true">⇩</span> Sauvegarder
+          </button>
+          <button class="nav-link backup-link admin-only" id="import-button" hidden>
+            <span class="nav-icon" aria-hidden="true">⇧</span> Importer une sauvegarde
+          </button>
+          <input id="backup-file" type="file" accept=".json,application/json" hidden />
+          <button class="nav-link backup-link" id="sign-out-button">
+            <span class="nav-icon" aria-hidden="true">⏻</span> Se déconnecter
+          </button>
+          <p class="sidebar-version">CHORA · BIBLIOTHÈQUE MUSICALE</p>
+        </div>
+      </aside>
+
+      <div class="mobile-overlay" id="mobile-overlay"></div>
+      <main class="main-area">
+        <header class="topbar">
+          <button class="mobile-menu" id="menu-toggle" aria-label="Ouvrir le menu">☰</button>
+          <div class="breadcrumb"><span>Chora</span><span class="crumb-separator">/</span><strong id="page-crumb">Tableau de bord</strong></div>
+          <div class="topbar-right">
+            <div class="topbar-profile" id="topbar-profile">
+              <span class="avatar" id="topbar-avatar" aria-hidden="true">C</span>
+              <span class="topbar-profile-copy">
+                <strong id="topbar-name">Membre</strong>
+                <span class="topbar-profile-detail"><span class="local-status"><span></span><b id="topbar-role">Choriste</b></span><span class="topbar-profile-voice" id="topbar-voice">Voix non renseignée</span></span>
+              </span>
+            </div>
+          </div>
+        </header>
+        <div class="page-content" id="app-content"></div>
+        <footer class="site-footer">
+          <div class="footer-inner">
+            <div class="footer-main">
+              <div class="footer-parish">
+                <span class="footer-emblem" aria-hidden="true">♫</span>
+                <div class="footer-parish-copy">
+                  <span class="footer-kicker">AU SERVICE DU CHANT ET DE LA PRIÈRE</span>
+                  <strong>Paroisse Saint Kizito</strong>
+                  <span class="footer-location">KM 36 <span aria-hidden="true">·</span> Chorale Saint Remond</span>
+                </div>
+              </div>
+              <div class="footer-credit">
+                <span class="footer-credit-label">Conçu et développé par</span>
+                <strong>JohnnyCodeur Tech</strong>
+                <a href="https://johnnycodeur-tech-guinee.netlify.app" target="_blank" rel="noopener noreferrer">Découvrir mon site <span aria-hidden="true">↗</span></a>
+              </div>
+            </div>
+            <div class="footer-bottom">
+              <span>© <span id="footer-year"></span> Chora · Bibliothèque musicale</span>
+              <span>Une voix, une foi, une chorale.</span>
+            </div>
+          </div>
+        </footer>
+        <nav class="mobile-action-bar" aria-label="Actions rapides">
+          <button class="btn btn-secondary" data-page="library"><span aria-hidden="true">♫</span> Bibliothèque</button>
+          <button class="btn btn-secondary" data-page="programs"><span aria-hidden="true">♧</span> Messes</button>
+          <button class="btn btn-primary admin-only" data-action="new-song" hidden><span aria-hidden="true">＋</span> Ajouter un chant</button>
+          <button class="btn btn-secondary" data-page="favorites"><span aria-hidden="true">♡</span> Favoris</button>
+        </nav>
+      </main>
+    </div>
+
+    <div class="modal-backdrop" id="modal-backdrop" hidden>
+      <section class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"></section>
+    </div>
+    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.min.js"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/app.js"></script>
+  </body>
+</html>

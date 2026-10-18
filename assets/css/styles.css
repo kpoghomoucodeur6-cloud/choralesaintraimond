@@ -1163,6 +1163,24 @@ h1 { margin-bottom: 9px; color: #183e30; font-size: clamp(32px, 3vw, 40px); lett
   .print-program-song, .print-program-note { grid-column: 2; }
 }
 
+@media (max-width: 760px) {
+  .topbar { min-width: 0; justify-content: flex-start; gap: 11px; }
+  .breadcrumb { min-width: 0; flex: 1 1 auto; overflow: hidden; }
+  .breadcrumb strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .topbar-right { min-width: 0; flex: 0 0 auto; margin-left: auto; }
+  .topbar-profile { min-width: 0; gap: 0; }
+  .topbar-profile-copy { display: none; }
+  .topbar-profile > .avatar { display: grid; width: 42px; height: 42px; flex: 0 0 42px; place-items: center; border: 2px solid #fff; outline: 1px solid #d7c27c; border-radius: 50%; background: linear-gradient(145deg, #f7f1dd, #e9dfc2); color: #34523e; font-size: 15px; box-shadow: 0 3px 12px #173d321b; }
+}
+
+@media (max-width: 390px) {
+  .topbar { gap: 8px; padding-inline: 12px; }
+  .mobile-menu { width: 39px; height: 39px; }
+  .topbar > .mobile-menu { flex: 0 0 39px; }
+  .topbar-profile > .avatar { width: 39px; height: 39px; flex-basis: 39px; }
+  .breadcrumb { font-size: 12px; }
+}
+
 @media print {
   @page { margin: 16mm; }
   body.printing-program, body.printing-program * { visibility: hidden !important; }

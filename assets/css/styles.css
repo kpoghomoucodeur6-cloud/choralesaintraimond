@@ -483,6 +483,18 @@ h1 { margin-bottom: 9px; color: #183e30; font-size: clamp(32px, 3vw, 40px); lett
 .category-symbol { font-size: 23px; }
 .category-name { margin-top: 16px; color: #284432; font-size: 16px; }
 .category-total { color: #718076; font-size: 13px; }
+.category-section-heading { margin: 30px 0 15px; color: #284432; font: 600 20px "Playfair Display", serif; }
+.song-category-pills { display: flex; flex-wrap: wrap; gap: 5px; min-width: 170px; }
+.song-category-pills .pill { white-space: normal; }
+.category-fieldset { min-width: 0; margin: 0; border: 0; padding: 0; }
+.category-fieldset legend { margin-bottom: 7px; color: #58645c; font-size: 12px; font-weight: 700; }
+.category-fieldset legend span { color: #b15347; }
+.category-choice-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; max-height: 250px; overflow-y: auto; border: 1px solid #dfe6de; border-radius: 11px; background: #fbfcfa; padding: 10px; }
+.category-choice { display: flex; min-height: 39px; align-items: center; gap: 9px; border: 1px solid #e7ece5; border-radius: 9px; background: #fff; padding: 8px 10px; color: #45554a; cursor: pointer; }
+.category-choice input { width: 16px; height: 16px; flex: 0 0 auto; accent-color: #356b4c; }
+.category-choice span { font-size: 12px; line-height: 1.35; }
+.category-choice input:checked + span { color: #24573b; font-weight: 700; }
+.detail-mass-moment { margin: 9px 0 0; color: #718076; font-size: 12px; }
 .empty-state { padding: 58px 24px; }
 .empty-icon { width: 60px; height: 60px; border: 1px solid #dce8dc; border-radius: 18px; font-size: 27px; }
 .empty-state h3 { font-size: 21px; }
@@ -934,6 +946,7 @@ h1 { margin-bottom: 9px; color: #183e30; font-size: clamp(32px, 3vw, 40px); lett
   .voice-file-card { padding: 12px; }
   .voice-media-card { padding: 13px; }
   .voice-media-actions .btn { flex: 1 1 auto; }
+  .category-choice-grid { grid-template-columns: 1fr; }
 }
 
 .program-search-card {

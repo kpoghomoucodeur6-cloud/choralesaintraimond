@@ -187,6 +187,63 @@ create policy "songs_delete_admin" on public.songs
 revoke all on public.songs from anon, authenticated;
 grant select, insert, update, delete on public.songs to authenticated;
 
+-- ---------- Classement par temps, fêtes et célébrations ----------
+create table if not exists public.song_categories (
+  song_id uuid not null references public.songs (id) on delete cascade,
+  category text not null check (category in (
+    'Noël et Épiphanie', 'Temps ordinaire', 'Avent', 'Carême', 'Semaine sainte',
+    'Pâques et temps pascal', 'Ascension', 'Pentecôte', 'Assomption', 'Toussaint',
+    'Chants pour les défunts', 'Chants mariaux', 'Baptême', 'Première communion',
+    'Confirmation', 'Mariage', 'Fêtes patronales et paroissiales',
+    'Adoration eucharistique', 'Action de grâce', 'Autres célébrations'
+  )),
+  primary key (song_id, category)
+);
+
+insert into public.song_categories (song_id, category)
+select id, category
+from public.songs
+where category in ('Chants mariaux')
+on conflict (song_id, category) do nothing;
+
+alter table public.song_categories enable row level security;
+
+drop policy if exists "song_categories_select" on public.song_categories;
+create policy "song_categories_select" on public.song_categories
+  for select to authenticated using (true);
+
+revoke all on public.song_categories from anon, authenticated;
+grant select on public.song_categories to authenticated;
+
+create or replace function public.set_song_categories(p_song_id uuid, p_categories text[])
+returns void
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+begin
+  if not public.is_admin() then
+    raise exception 'admin role required';
+  end if;
+  if p_categories is null or cardinality(p_categories) > 20 then
+    raise exception 'invalid category list';
+  end if;
+  if cardinality(p_categories) <> (
+    select count(distinct category) from unnest(p_categories) as requested(category)
+  ) then
+    raise exception 'duplicate category';
+  end if;
+
+  delete from public.song_categories where song_id = p_song_id;
+  insert into public.song_categories (song_id, category)
+  select p_song_id, requested.category
+  from unnest(p_categories) as requested(category);
+end;
+$$;
+
+revoke all on function public.set_song_categories(uuid, text[]) from public, anon;
+grant execute on function public.set_song_categories(uuid, text[]) to authenticated;
+
 -- ---------- Programmes des messes ----------
 create table if not exists public.mass_programs (
   id uuid primary key,

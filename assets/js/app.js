@@ -1,10 +1,21 @@
 (function () {
   "use strict";
 
-  const CATEGORIES = [
+  const MASS_MOMENTS = [
     "Chant d'entrée", "Kyrie", "Gloria", "Psaume", "Alléluia", "Offertoire",
     "Sanctus", "Agnus Dei", "Communion", "Chant de sortie", "Chants mariaux", "Autres chants"
   ];
+  const LITURGICAL_CATEGORIES = [
+    "Noël et Épiphanie", "Temps ordinaire", "Avent", "Carême", "Semaine sainte",
+    "Pâques et temps pascal", "Ascension", "Pentecôte", "Assomption", "Toussaint",
+    "Chants pour les défunts", "Chants mariaux", "Baptême", "Première communion",
+    "Confirmation", "Mariage", "Fêtes patronales et paroissiales",
+    "Adoration eucharistique", "Action de grâce", "Autres célébrations"
+  ];
+  const LEGACY_MOMENTS = MASS_MOMENTS.filter(function (category) {
+    return !LITURGICAL_CATEGORIES.includes(category);
+  });
+  const CATEGORY_FILTERS = Array.from(new Set(LITURGICAL_CATEGORIES.concat(MASS_MOMENTS)));
   const VOICE_PARTS = [
     { id: "soprano", label: "Soprano" },
     { id: "alto", label: "Alto" },
@@ -98,6 +109,14 @@
   function memberVoiceLabel(value) {
     const voice = MEMBER_VOICES.find(function (item) { return item.id === value; });
     return voice ? voice.label : "Non renseignée";
+  }
+  function songCategoryLabels(song) {
+    return Array.from(new Set((song.categories || []).concat(song.category ? [song.category] : [])));
+  }
+  function categoryPills(song) {
+    return songCategoryLabels(song).map(function (category) {
+      return '<span class="pill">' + escapeHtml(category) + '</span>';
+    }).join("");
   }
 
   function notify(message, isError) {
@@ -320,11 +339,12 @@
 
   /* ---------- Données ---------- */
 
-  function mapSong(row, favorites) {
+  function mapSong(row, favorites, categories) {
     return {
       id: row.id,
       title: row.title,
       category: row.category,
+      categories: categories || [],
       author: row.author || "",
       duration: row.duration || "",
       lyrics: row.lyrics || "",
@@ -345,16 +365,25 @@
   async function loadSongs() {
     const responses = await Promise.all([
       client.from("songs").select("*").order("created_at", { ascending: false }),
-      client.from("favorites").select("song_id")
+      client.from("favorites").select("song_id"),
+      client.from("song_categories").select("song_id,category")
     ]);
     const songsResult = responses[0];
     const favoritesResult = responses[1];
-    if (songsResult.error || favoritesResult.error) {
-      notify(friendlyError(songsResult.error || favoritesResult.error, "Impossible de charger les chants."), true);
+    const categoriesResult = responses[2];
+    if (songsResult.error || favoritesResult.error || categoriesResult.error) {
+      notify(friendlyError(songsResult.error || favoritesResult.error || categoriesResult.error, "Impossible de charger les chants et leurs catégories."), true);
       return false;
     }
     const favorites = new Set(favoritesResult.data.map(function (row) { return row.song_id; }));
-    songs = songsResult.data.map(function (row) { return mapSong(row, favorites); });
+    const categoriesBySong = new Map();
+    categoriesResult.data.forEach(function (link) {
+      if (!categoriesBySong.has(link.song_id)) categoriesBySong.set(link.song_id, []);
+      categoriesBySong.get(link.song_id).push(link.category);
+    });
+    songs = songsResult.data.map(function (row) {
+      return mapSong(row, favorites, categoriesBySong.get(row.id));
+    });
     return true;
   }
 
@@ -519,7 +548,9 @@
 
   function renderDashboard() {
     const total = songs.length;
-    const categoriesUsed = new Set(songs.map(function (song) { return song.category; })).size;
+    const categoriesUsed = new Set(songs.reduce(function (all, song) {
+      return all.concat(songCategoryLabels(song));
+    }, [])).size;
     const pdfs = songs.filter(function (song) { return !!song.pdf; }).length;
     const favorites = songs.filter(function (song) { return song.favorite; }).length;
     const newest = songs.slice(0, 5);
@@ -541,10 +572,11 @@
   function filteredSongs() {
     const query = searchTerm.trim().toLocaleLowerCase("fr");
     const result = songs.filter(function (song) {
-      const matchesQuery = !query || [song.title, song.author, song.category, song.lyrics].some(function (value) {
+      const matchesQuery = !query || [song.title, song.author, song.category, song.lyrics]
+        .concat(song.categories || []).some(function (value) {
         return value.toLocaleLowerCase("fr").includes(query);
       });
-      const matchesCategory = !categoryFilter || song.category === categoryFilter;
+      const matchesCategory = !categoryFilter || songCategoryLabels(song).includes(categoryFilter);
       const matchesFavorite = currentPage !== "favorites" || song.favorite;
       return matchesQuery && matchesCategory && matchesFavorite;
     });
@@ -563,14 +595,14 @@
     const subtitle = isManage ? "Ajoutez, modifiez et organisez le répertoire de votre chorale." :
       isFavorites ? "Retrouvez rapidement les chants que vous aimez." : "Parcourez et retrouvez facilement tous les chants du répertoire.";
     const result = filteredSongs();
-    const filterOptions = CATEGORIES.map(function (category) {
+    const filterOptions = CATEGORY_FILTERS.map(function (category) {
       return '<option value="' + escapeHtml(category) + '"' + (categoryFilter === category ? " selected" : "") + '>' + escapeHtml(category) + '</option>';
     }).join("");
     let rows;
     if (result.length) {
-      rows = '<div class="table-wrap"><table class="song-table"><thead><tr><th>Titre du chant</th><th>Catégorie</th><th>Auteur / compositeur</th><th>Durée</th><th>Documents</th><th>Ajouté le</th><th>Actions</th></tr></thead><tbody>' +
+      rows = '<div class="table-wrap"><table class="song-table"><thead><tr><th>Titre du chant</th><th>Catégories / moment</th><th>Auteur / compositeur</th><th>Durée</th><th>Documents</th><th>Ajouté le</th><th>Actions</th></tr></thead><tbody>' +
         result.map(function (song) {
-          return '<tr><td><button class="table-title" data-action="details" data-id="' + escapeHtml(song.id) + '">' + escapeHtml(song.title) + '</button></td><td><span class="pill">' + escapeHtml(song.category) + '</span></td><td>' + (escapeHtml(song.author) || "—") + '</td><td>' + (escapeHtml(song.duration) || "—") + '</td><td>' + fileIndicators(song) + '</td><td>' + formatDate(song.createdAt) + '</td><td><div class="row-action">' +
+          return '<tr><td><button class="table-title" data-action="details" data-id="' + escapeHtml(song.id) + '">' + escapeHtml(song.title) + '</button></td><td><div class="song-category-pills">' + categoryPills(song) + '</div></td><td>' + (escapeHtml(song.author) || "—") + '</td><td>' + (escapeHtml(song.duration) || "—") + '</td><td>' + fileIndicators(song) + '</td><td>' + formatDate(song.createdAt) + '</td><td><div class="row-action">' +
             '<button class="icon-button" data-action="favorite" data-id="' + escapeHtml(song.id) + '" aria-label="Favori">' + (song.favorite ? "♥" : "♡") + '</button>' +
             '<button class="icon-button" data-action="details" data-id="' + escapeHtml(song.id) + '" aria-label="Voir">↗</button>' +
             (isManage ? '<button class="icon-button" data-action="edit" data-id="' + escapeHtml(song.id) + '" aria-label="Modifier">✎</button><button class="icon-button" data-action="delete" data-id="' + escapeHtml(song.id) + '" aria-label="Supprimer">⌫</button>' : "") +
@@ -580,18 +612,24 @@
       rows = emptyState(isFavorites ? "Aucun favori pour le moment" : "Aucun chant trouvé", isFavorites ? "Appuyez sur le cœur d’un chant pour l’ajouter à vos favoris." : "Essayez une autre recherche ou revenez plus tard.", !isFavorites);
     }
     return pageHeading(isFavorites ? "SÉLECTION PERSONNELLE" : "VOTRE RÉPERTOIRE", headingTitle, subtitle, isManage ? addButton() : "") +
-      '<section class="section-card"><div class="library-toolbar"><label class="search-wrap"><img class="search-icon" src="assets/images/choir-logo.png" alt="" aria-hidden="true"><input id="song-search" class="field" type="search" placeholder="Rechercher par titre, auteur, paroles…" value="' + escapeHtml(searchTerm) + '" aria-label="Rechercher dans les chants"></label>' +
+      '<section class="section-card"><div class="library-toolbar"><label class="search-wrap"><img class="search-icon" src="assets/images/choir-logo.png" alt="" aria-hidden="true"><input id="song-search" class="field" type="search" placeholder="Titre, auteur, catégorie, fête liturgique…" value="' + escapeHtml(searchTerm) + '" aria-label="Rechercher un chant par titre, auteur, paroles, catégorie ou fête liturgique"></label>' +
       '<select id="category-filter" class="select-field" aria-label="Filtrer par catégorie"><option value="">Toutes les catégories</option>' + filterOptions + '</select>' +
       '<select id="sort-filter" class="select-field" aria-label="Trier les chants"><option value="recent"' + (sortBy === "recent" ? " selected" : "") + '>Plus récents</option><option value="title"' + (sortBy === "title" ? " selected" : "") + '>Titre A–Z</option><option value="category"' + (sortBy === "category" ? " selected" : "") + '>Catégorie</option></select></div>' +
       (categoryFilter ? '<div style="padding:12px 20px 0"><button class="text-link" data-action="clear-category">← Toutes les catégories</button></div>' : "") + rows + '</section>';
   }
 
   function renderCategories() {
-    return pageHeading("ORGANISEZ VOTRE RÉPERTOIRE", "Catégories liturgiques", "Explorez les chants selon les temps et les moments de la célébration.") +
-      '<div class="category-grid">' + CATEGORIES.map(function (category, index) {
-        const count = songs.filter(function (song) { return song.category === category; }).length;
+    const cards = function (categories, legacy) {
+      return categories.map(function (category, index) {
+        const count = songs.filter(function (song) {
+          return legacy ? song.category === category : (song.categories || []).includes(category);
+        }).length;
         return '<button class="category-card" data-action="open-category" data-category="' + escapeHtml(category) + '"><span class="category-symbol" aria-hidden="true">' + ["♩", "♪", "♫", "♬"][index % 4] + '</span><p class="category-name">' + escapeHtml(category) + '</p><p class="category-total">' + count + (count > 1 ? " chants" : " chant") + '</p></button>';
-      }).join("") + '</div>';
+      }).join("");
+    };
+    return pageHeading("ORGANISEZ VOTRE RÉPERTOIRE", "Catégories liturgiques", "Explorez les chants par temps liturgique, fête ou célébration. Un chant peut figurer dans plusieurs catégories.") +
+      '<h2 class="category-section-heading">Temps, fêtes et célébrations</h2><div class="category-grid">' + cards(LITURGICAL_CATEGORIES, false) + '</div>' +
+      '<h2 class="category-section-heading">Moments de la messe · classement conservé</h2><div class="category-grid">' + cards(LEGACY_MOMENTS, true) + '</div>';
   }
 
   function renderMembers() {
@@ -809,7 +847,10 @@
   function renderProgramSongPicker() {
     const definition = MASS_STEPS.find(function (step) { return step.id === programPickerStep; });
     const query = programPickerSearch.trim().toLocaleLowerCase("fr");
-    const results = songs.filter(function (song) { return song.title.toLocaleLowerCase("fr").includes(query); });
+    const results = songs.filter(function (song) {
+      return !query || [song.title, song.author, song.lyrics].concat(songCategoryLabels(song))
+        .some(function (value) { return value.toLocaleLowerCase("fr").includes(query); });
+    });
     const rows = results.length ? '<div class="program-song-options">' + results.map(function (song) {
       const step = findDraftStep(programPickerStep);
       const selected = (step.song_ids || []).includes(song.id);
@@ -926,13 +967,18 @@
   function openSongForm(song) {
     if (!isAdmin()) return;
     const editing = !!song;
-    const options = CATEGORIES.map(function (category) {
+    const options = MASS_MOMENTS.map(function (category) {
       return '<option value="' + escapeHtml(category) + '"' + (song && song.category === category ? " selected" : "") + '>' + escapeHtml(category) + '</option>';
+    }).join("");
+    const categoryChoices = LITURGICAL_CATEGORIES.map(function (category, index) {
+      const checked = song && (song.categories || []).includes(category) ? " checked" : "";
+      return '<label class="category-choice"><input type="checkbox" name="categories" value="' + escapeHtml(category) + '" id="song-event-category-' + index + '"' + checked + '><span>' + escapeHtml(category) + '</span></label>';
     }).join("");
     const voiceFields = VOICE_PARTS.map(function (voice) { return voiceFileFields(voice, song); }).join("");
     openModal(editing ? "Modifier le chant" : "Ajouter un chant", "Les champs marqués d’un astérisque sont obligatoires.", '<form class="modal-body" id="song-form" novalidate>' +
       '<div class="form-grid"><div class="form-field full"><label for="song-title">Titre du chant <span>*</span></label><input class="field" id="song-title" name="title" maxlength="140" required value="' + escapeHtml(song ? song.title : "") + '" placeholder="Ex. : Peuple de lumière"></div>' +
-      '<div class="form-field"><label for="song-category">Catégorie <span>*</span></label><select class="select-field" id="song-category" name="category" required><option value="">Choisir une catégorie</option>' + options + '</select></div>' +
+      '<div class="form-field"><label for="song-category">Moment dans la messe (classement conservé) <span>*</span></label><select class="select-field" id="song-category" name="category" required><option value="">Choisir un moment</option>' + options + '</select></div>' +
+      '<fieldset class="form-field full category-fieldset"><legend>Temps, fêtes ou célébrations associés <span>*</span></legend><p class="field-hint">Choisissez une ou plusieurs catégories. Un même chant peut être associé à plusieurs fêtes sans être dupliqué.</p><div class="category-choice-grid">' + categoryChoices + '</div></fieldset>' +
       '<div class="form-field"><label for="song-author">Auteur / compositeur</label><input class="field" id="song-author" name="author" maxlength="120" value="' + escapeHtml(song ? song.author : "") + '" placeholder="Nom, si connu"></div>' +
       '<div class="form-field"><label for="song-duration">Durée</label><input class="field" id="song-duration" name="duration" maxlength="20" value="' + escapeHtml(song ? song.duration : "") + '" placeholder="Ex. : 3 min 20"></div>' +
       '<div class="form-field full"><label for="song-lyrics">Paroles</label><textarea class="textarea-field" id="song-lyrics" name="lyrics" maxlength="30000" placeholder="Saisissez les paroles du chant…">' + escapeHtml(song ? song.lyrics : "") + '</textarea></div>' +
@@ -972,8 +1018,9 @@
     const formData = new FormData(form);
     const title = String(formData.get("title") || "").trim();
     const category = String(formData.get("category") || "");
-    if (!title || !CATEGORIES.includes(category)) {
-      notify("Veuillez renseigner un titre et choisir une catégorie.", true);
+    const categories = Array.from(new Set(formData.getAll("categories").map(String)));
+    if (!title || !MASS_MOMENTS.includes(category) || !categories.length || categories.some(function (value) { return !LITURGICAL_CATEGORIES.includes(value); })) {
+      notify("Veuillez renseigner un titre, un moment de la messe et au moins une catégorie liturgique.", true);
       return;
     }
     const mediaFiles = [{ kind: "pdf", input: form.elements.pdf }];
@@ -1032,6 +1079,39 @@
       submit.disabled = false;
       return;
     }
+    const categoryResult = await client.rpc("set_song_categories", { p_song_id: songId, p_categories: categories });
+    if (categoryResult.error) {
+      if (!existing) {
+        const rollback = await client.from("songs").delete().eq("id", songId);
+        if (rollback.error) {
+          notify("Le chant a été créé, mais ses catégories n’ont pas été enregistrées. Il est conservé pour éviter toute perte ; réessayez de le modifier. " + friendlyError(categoryResult.error, "Erreur de catégorie."), true);
+          submit.disabled = false;
+          return;
+        }
+        if (uploaded.length) {
+          const cleanup = await client.storage.from(BUCKET).remove(uploaded);
+          if (cleanup.error) {
+            notify("Le chant a été annulé, mais certains fichiers temporaires n’ont pas pu être supprimés. " + friendlyError(cleanup.error, "Erreur de nettoyage."), true);
+          }
+        }
+      } else {
+        let cleanupWarning = "";
+        if (obsolete.length) {
+          const cleanup = await client.storage.from(BUCKET).remove(obsolete);
+          if (cleanup.error) cleanupWarning = " Les anciens fichiers n’ont pas pu être supprimés.";
+        }
+        await loadSongs();
+        const refreshedSong = songs.find(function (item) { return item.id === songId; });
+        if (refreshedSong) Object.assign(existing, refreshedSong);
+        render();
+        notify("Les informations du chant ont été enregistrées, mais ses catégories n’ont pas été modifiées. " + friendlyError(categoryResult.error, "Erreur de catégorie.") + cleanupWarning, true);
+        submit.disabled = false;
+        return;
+      }
+      notify(friendlyError(categoryResult.error, "Impossible d’enregistrer les catégories du chant."), true);
+      submit.disabled = false;
+      return;
+    }
     if (obsolete.length) client.storage.from(BUCKET).remove(obsolete);
     await loadSongs();
     closeModal();
@@ -1058,7 +1138,7 @@
       if (files.length) fileGroups.push({ label: voice.label, files: files });
     });
     const hasFiles = fileGroups.length > 0;
-    openModal(escapeHtml(song.title), "Fiche du chant", '<div class="modal-body"><div class="detail-category"><span class="pill">' + escapeHtml(song.category) + '</span></div><div class="detail-meta">' +
+    openModal(escapeHtml(song.title), "Fiche du chant", '<div class="modal-body"><div class="detail-category"><div class="song-category-pills">' + (song.categories && song.categories.length ? categoryPills({ categories: song.categories }) : '<span class="field-hint">Aucune catégorie de fête renseignée.</span>') + '</div><p class="detail-mass-moment">Moment dans la messe : ' + escapeHtml(song.category) + '</p></div><div class="detail-meta">' +
       (song.author ? '<span><strong>Auteur :</strong> ' + escapeHtml(song.author) + '</span>' : "") +
       (song.duration ? '<span><strong>Durée :</strong> ' + escapeHtml(song.duration) + '</span>' : "") +
       '<span><strong>Ajouté le :</strong> ' + formatDate(song.createdAt) + '</span></div>' +
@@ -1128,11 +1208,11 @@
     if (!isAdmin()) return;
     const backup = {
       format: "chora-library",
-      version: 3,
+      version: 4,
       exportedAt: new Date().toISOString(),
       songs: songs.map(function (song) {
         const backupSong = {
-          title: song.title, category: song.category, author: song.author, duration: song.duration,
+          title: song.title, category: song.category, categories: song.categories || [], author: song.author, duration: song.duration,
           lyrics: song.lyrics, createdAt: song.createdAt,
           pdf: song.pdf ? { name: song.pdf.name } : null, audio: song.audio ? { name: song.audio.name } : null
         };
@@ -1173,7 +1253,14 @@
     const author = raw.author == null ? "" : text(raw.author, 120);
     const duration = raw.duration == null ? "" : text(raw.duration, 20);
     const lyrics = raw.lyrics == null ? "" : text(raw.lyrics, 30000);
-    if (!title || author === null || duration === null || lyrics === null || !CATEGORIES.includes(raw.category)) return null;
+    if (!title || author === null || duration === null || lyrics === null || !MASS_MOMENTS.includes(raw.category)) return null;
+    const rawCategories = raw.categories == null
+      ? (LITURGICAL_CATEGORIES.includes(raw.category) ? [raw.category] : [])
+      : raw.categories;
+    if (!Array.isArray(rawCategories) || rawCategories.some(function (category) {
+      return typeof category !== "string" || !LITURGICAL_CATEGORIES.includes(category);
+    })) return null;
+    const categories = Array.from(new Set(rawCategories));
     const pdf = raw.pdf && typeof raw.pdf.data === "string" ? raw.pdf : null;
     const audio = raw.audio && typeof raw.audio.data === "string" ? raw.audio : null;
     if ((pdf && !validAttachment(pdf, "pdf")) || (audio && !validAttachment(audio, "audio"))) return null;
@@ -1190,7 +1277,7 @@
       if (partAudio && !validAttachment(partAudio, "audio")) return null;
       voices[voice.id] = { audio: partAudio };
     }
-    return { title: title, category: raw.category, author: author, duration: duration, lyrics: lyrics, pdf: pdf, audio: audio, voices: voices };
+    return { title: title, category: raw.category, categories: categories, author: author, duration: duration, lyrics: lyrics, pdf: pdf, audio: audio, voices: voices };
   }
 
   function dataUrlToBlob(dataUrl) {
@@ -1239,6 +1326,12 @@
         }
         const result = await client.from("songs").insert(fields);
         if (result.error) throw result.error;
+        const categoryResult = await client.rpc("set_song_categories", { p_song_id: id, p_categories: item.categories });
+        if (categoryResult.error) {
+          const rollback = await client.from("songs").delete().eq("id", id);
+          if (rollback.error) throw new Error("Chant importé mais catégories non enregistrées, et suppression de secours impossible : " + friendlyError(rollback.error, "Erreur de suppression."));
+          throw categoryResult.error;
+        }
         known.add(key);
         added += 1;
       } catch (error) {

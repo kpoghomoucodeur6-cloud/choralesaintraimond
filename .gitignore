@@ -5,5 +5,3 @@ node_modules/
 dist/
 .DS_Store
 Thumbs.db
-/robots.txt
-/sitemap.xml

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://choralesaintraidmond.netlify.app/sitemap.xml

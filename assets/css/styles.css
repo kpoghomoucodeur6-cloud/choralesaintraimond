@@ -874,7 +874,18 @@ h1 { margin-bottom: 9px; color: #183e30; font-size: clamp(32px, 3vw, 40px); lett
 .sidebar-bottom { border-top: 1px solid #ffffff20; padding-top: 12px; }
 .local-note { margin-top: 5px; }
 .backup-link { min-height: 43px; border-radius: 11px; color: #d1ded5; }
-.backup-link .nav-icon { width: 35px; flex: 0 0 35px; text-align: center; }
+.backup-link .nav-icon {
+  display: grid;
+  width: 35px;
+  height: 35px;
+  flex: 0 0 35px;
+  place-items: center;
+  border: 1px solid #ffffff13;
+  border-radius: 11px;
+  background: #ffffff0b;
+  color: #ddc67f;
+}
+.backup-link .nav-icon svg { display: block; width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
 .backup-link:hover { background: #ffffff12; color: #fff; }
 .sidebar-version { margin-bottom: 0; color: #a8bdb0; }
 .main-area { margin-left: 280px; }
